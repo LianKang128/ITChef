@@ -1,0 +1,82 @@
+<script>
+    function navigateTo(page) {
+      google.script.run.withSuccessHandler(function(html) {
+        document.getElementById('content').innerHTML = html;
+      }).getPage(page);
+    }
+    
+    function sendEmails() {
+      const sendAllCustomers = document.getElementById('sendAllCustomers').checked;
+      const birthdayMonth = document.getElementById('birthdayMonth').checked;
+      const ageFrom = document.getElementById('ageFrom').value;
+      const ageTo = document.getElementById('ageTo').value;
+      const gender = document.getElementById('gender').value;
+      const nationality = Array.from(document.getElementById('nationality').selectedOptions).map(option => option.value);
+      const subject = document.getElementById('subject').value;
+      const body = document.getElementById('body').value;
+      const files = document.getElementById('attachments').files;
+  
+      if (!subject || !body) {
+        alert("Email subject and body cannot be empty.");
+        return;
+      }
+  
+      const criteria = {
+        sendAllCustomers,
+        birthdayMonth,
+        ageFrom,
+        ageTo,
+        gender,
+        nationality,
+        subject,
+        body,
+        files: []
+      };
+  
+      const filePromises = Array.from(files).map(file => {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => {
+            criteria.files.push({
+              name: file.name,
+              type: file.type,
+              content: reader.result.split(",")[1] // Get base64 string
+            });
+            resolve();
+          };
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+        });
+      });
+  
+      Promise.all(filePromises)
+        .then(() => {
+          console.log("Criteria object to be sent:", criteria);
+          google.script.run.withSuccessHandler(function(emailCount) {
+            console.log(`Emails sent: ${emailCount}`);
+            alert(`Emails sent: ${emailCount}`);
+          }).withFailureHandler(function(error) {
+            console.error("Error sending emails:", error);
+            alert("Error sending emails: " + error.message);
+          }).sendEmails(criteria);
+        })
+        .catch(error => {
+          console.error("Error reading files:", error);
+          alert("Error reading files: " + error.message);
+        });
+    }
+  
+  
+    // function analyzeData() {
+    //   google.script.run.analyzeCustomerData();
+    //   alert("Customer data analysis completed.");
+    // }
+  
+    // function recommendProducts() {
+    //   google.script.run.recommendProducts();
+    //   alert("Product recommendations generated.");
+    // }
+  
+    // Load the home page content initially
+    navigateTo('home');
+  </script>

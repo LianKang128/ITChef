@@ -1,0 +1,60 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Database Filtering System - Email Automation</title>
+</head>
+<body>
+  <h1>Automate Email</h1>
+  <h2>Customise Receiver</h2>
+  <form id="emailForm">
+    <div class="form-control checkbox-group">
+      <input type="checkbox" id="sendAllCustomers" name="sendAllCustomers" onchange="toggleCheckboxes(this)">
+      <label for="sendAllCustomers">Send to All Customers</label>
+    </div>
+    <div class="form-control checkbox-group">
+      <input type="checkbox" id="birthdayMonth" name="birthdayMonth" onchange="toggleCheckboxes(this)">
+      <label for="birthdayMonth">Send to birthday month's customers</label>
+    </div>
+
+    <div class="form-control slider-container">
+      <label for="ageRange">Age Range: <span id="ageValue">0 - 100</span></label>
+      <input type="range" id="ageFrom" min="0" max="100" value="0" oninput="updateRange()">
+      <input type="range" id="ageTo" min="0" max="100" value="100" oninput="updateRange()">
+    </div>
+
+    <div class="form-control">
+      <label for="gender">Gender:</label>
+      <select id="gender" name="gender">
+        <option value="">Select Gender</option>
+        <option value="Male">Male</option>
+        <option value="Female">Female</option>
+      </select>
+    </div>
+    <div class="form-control">
+      <label for="nationality">Nationality:</label>
+      <select id="nationality" name="nationality[]" size="5" multiple>
+        <option value="Malaysia">Malaysia</option>
+        <option value="Singapore">Singapore</option>
+      </select>
+    </div>
+    <div class="form-control">
+      <label for="subject">Email Subject:</label>
+      <input type="text" id="subject" name="subject">
+    </div>
+    <div class="form-control">
+      <label for="body">Email Body:</label>
+      <textarea id="body" name="body" rows="6"></textarea>
+    </div>
+    <div class="form-control">
+      <label for="attachments">Attachments:</label>
+      <input type="file" id="attachments" name="attachments" multiple>
+    </div>
+    <div class="form-control align-right">
+      <button type="button" onclick="sendEmails()">SEND</button>
+    </div>
+  </form>
+</body>
+</html>
